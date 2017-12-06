@@ -19,37 +19,81 @@
       </tr>
     </table>
     <script>
-      // const input = 289326
-      const input = 25
+      const input = 289326
+      // const input =23
 
-      // let i = 1
       let table = [
         [9,2,3],
         [8,1,4],
         [7,6,5]
       ]
       let currentSquareSize = 3
-      let direction = "horizontal"
 
-      drawTable = (input,table,currentSquareSize, direction) => {
+      drawTable = (input,table,currentSquareSize) => {
+        // starts at 9 since we have a table with 9 elements
         for(var i=9; i <= input; i++){
-          if (currentSquareSize * currentSquareSize == i){
-            newArray = Array(currentSquareSize + 2).fill(0)
-            table.splice(0, 0, newArray)
-            table.push(newArray)
-            for(var y=1; y <= currentSquareSize; y++){
-              table[y].splice(0, 0, 0)
-              table[y].push(0)
-            }
 
-            currentSquareSize += 2
+          if (currentSquareSize * currentSquareSize == i){
+            previousSquareSize = currentSquareSize                      // previousSquareSize = 3
+            currentSquareSize += 2                                      // currentSquareSize = 5
+            smallStartSquare = previousSquareSize * previousSquareSize  // smallStartSquare = 9
+            startSquare = currentSquareSize * currentSquareSize         // startSquare = 25
+
+            topArray    = Array()
+            bottomArray = Array()
+
+            verticalIndexRight = 0
+            verticalIndexLeft = table.length - 1
+
+            topArray[0] = startSquare
+
+            for(var y=smallStartSquare+1; y <= startSquare - 1; y++){
+              if( smallStartSquare + 1 <= y && y <= smallStartSquare + previousSquareSize + 1){
+                // 25,10,11,12,13
+                topArray.push(y)
+              }else if ( smallStartSquare + previousSquareSize + 1 < y && y < smallStartSquare + 2 * (previousSquareSize + 1) ){
+                // 14,15,16
+                table[verticalIndexRight].push(y)
+                verticalIndexRight += 1
+              }else if ( smallStartSquare + 2 * (previousSquareSize + 1) <= y && y <= startSquare - (previousSquareSize + 1) ){
+                // 21,20,19,1}8,17
+                // 43,42,41,40,39,38,37
+                bottomArray.push(y)
+                // reversed afterwards
+              }else{
+                // 23,22,21
+                table[verticalIndexLeft].splice(0,0,y)
+                verticalIndexLeft -= 1
+              }
+            }
+            // console.log({topArray, bottomArray})
+
+            table.splice(0, 0, topArray)
+            table.push(bottomArray.reverse())
+
           }
         }
 
-        console.table(table)
+        // console.table(table)
+        table
       }
 
-      drawTable(input, table, currentSquareSize, direction)
+
+      getDistance = (input) => {
+        drawTable(input, table, currentSquareSize)
+        table.map( (row,index) => {
+          if ( row.indexOf(input) !== -1)
+            a = [row.indexOf(input) + 1, index + 1]
+        })
+        table.map( (row,index) => {
+          if (row.indexOf(1) !== -1)
+            b = [row.indexOf(1) + 1, index + 1]
+        })
+        console.log({horizontal: a[0]-b[0],
+                     vertical:   a[1]-b[1]})
+      }
+
+      getDistance(input)
 
     </script>
   </body>

@@ -1,0 +1,82 @@
+<html>
+  <body>
+    YO
+    <script>
+      const input = 289326
+      // const input = 23
+
+      let table = [
+        [25,1,2],
+        [23,1,4],
+        [11,10,5]
+      ]
+      let currentSquareSize = 3
+      let direction = "horizontal"
+      let rowSize = 0
+
+      let counter = 100
+      getNeighbors = (a,b) => {
+        // counter+=1
+        // return counter
+        count = 0
+        if (typeof table[a]   != 'undefined' && typeof table[a][b+1]   != 'undefined')  count += table[a][b+1]
+        if (typeof table[a+1] != 'undefined' && typeof table[a+1][b+1] != 'undefined')  count += table[a+1][b+1]
+        if (typeof table[a-1] != 'undefined' && typeof table[a-1][b+1] != 'undefined')  count += table[a-1][b+1]
+
+        if (typeof table[a]   != 'undefined' && typeof table[a][b-1]   != 'undefined')  count += table[a][b-1]
+        if (typeof table[a+1] != 'undefined' && typeof table[a+1][b-1] != 'undefined')  count += table[a+1][b-1]
+        if (typeof table[a-1] != 'undefined' && typeof table[a-1][b-1] != 'undefined')  count += table[a-1][b-1]
+
+        if (typeof table[a+1] != 'undefined' && typeof table[a+1][b]   != 'undefined')  count += table[a+1][b]
+        if (typeof table[a-1] != 'undefined' && typeof table[a-1][b]   != 'undefined')  count += table[a-1][b]
+
+        if (count > input)
+          console.log(count + " is larger")
+        return count
+
+      }
+
+      drawTable = (input,table,currentSquareSize) => {
+        // starts at 10 since we have a table with 9 elements
+        for(var i=9; i <= input; i++){
+          if (currentSquareSize * currentSquareSize == i){
+            rowSize = currentSquareSize + 1
+            currentSquareSize += 2
+            let emptyArray = Array(currentSquareSize).fill(0)
+            table.splice(0, 0, [...emptyArray])
+            table.push([...emptyArray])
+
+            for(var z = (rowSize - 1); z >= 1; z--){
+              // left row creation
+              table[z].splice(0,0,0)
+            }
+            for(var y=1; y <= rowSize; y++){
+              // top row
+              table[0].splice(y,1,getNeighbors(0,y))
+            }
+            for(var k=1; k <= rowSize - 1; k++){
+              // right row
+              table[k].push(getNeighbors(k,rowSize))
+            }
+
+            for(var j=rowSize; j >= 0; j--){
+              // bottom row
+              table[rowSize].splice(j,1,getNeighbors(rowSize,j))
+            }
+
+            for(var z = (rowSize - 1); z >= 1; z--){
+              // left row replacing
+              table[z].splice(0,1,getNeighbors(z,0))
+            }
+            table[0][0] = getNeighbors(0,0)
+          }
+        }
+
+        console.table(table)
+        table
+      }
+      drawTable(input, table, currentSquareSize)
+
+    </script>
+  </body>
+</html>
